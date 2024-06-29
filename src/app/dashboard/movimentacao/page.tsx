@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Add from '@/app/components/Add';
+import Add from '../../components/Add';
 
 interface Transaction {
   id: number;
