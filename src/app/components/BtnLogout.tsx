@@ -11,7 +11,7 @@ const BtnLogout= () => {
         >
         <MdOutlineLogout className="text-2xl text-emerald-400 group-hover:text-white" />
         <h3 className="text-base text-emerald-400 group-hover:text-white font-semibold">
-         Sair
+          Sair
         </h3>
       </button>
     )
