@@ -7,7 +7,7 @@ interface Transaction {
   note: string;
   category: string;
   value: number;
-  date: string; // Add date to the Transaction interface
+  date: string; 
 }
 
 interface Props {
@@ -20,14 +20,14 @@ const Add: React.FC<Props> = ({ addTransaction }) => {
   const [category, setCategory] = useState('');
   const [value, setValue] = useState('');
   const [date, setDate] = useState(''); // State for date
-  const [customCategory, setCustomCategory] = useState(''); // State for custom category
+  const [customCategory, setCustomCategory] = useState(''); 
   const [categories, setCategories] = useState<string[]>([]);
   
   useEffect(() => {
     if (type === 'Entrada') {
       setCategories(['Salário', 'Investimento', 'Outro']);
     } else if (type === 'Saída') {
-      setCategories(['Alimentação', 'Saúde', 'Lazer', 'Outro']); // Add 'Outro' to Saída categories
+      setCategories(['Alimentação', 'Saúde', 'Lazer', 'Outro']); 
     } else {
       setCategories([]);
     }
@@ -46,10 +46,10 @@ const Add: React.FC<Props> = ({ addTransaction }) => {
       id: Date.now(),
       type,
       note,
-      category: category === 'Outro' ? customCategory : category, // Use customCategory if category is 'Outro'
+      category: category === 'Outro' ? customCategory : category, 
       value: parseFloat(value),
-      date, // Include date in the new transaction
-    };
+      date,
+    }
     addTransaction(newTransaction);
     // Reset form fields
     setType('');
@@ -57,7 +57,7 @@ const Add: React.FC<Props> = ({ addTransaction }) => {
     setCategory('');
     setValue('');
     setDate('');
-    setCustomCategory(''); // Reset custom category
+    setCustomCategory(''); 
   };
 
   return (
