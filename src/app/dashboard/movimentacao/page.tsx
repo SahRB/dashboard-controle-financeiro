@@ -1,9 +1,8 @@
-"use client";
-
+"use client"
 import React, { useState, useEffect } from 'react';
 import Add from '../../components/Add';
-import { FaPencil } from 'react-icons/fa6';
-import { FaTrashAlt } from 'react-icons/fa';
+import BtnActions from '../../components/BtnActions';
+import CardInfo from '@/app/components/CardInfo';
 
 interface Transaction {
   id: number;
@@ -18,6 +17,7 @@ export default function Movimentacao() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editFormData, setEditFormData] = useState<Transaction | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const storedTransactions = localStorage.getItem('transactions');
@@ -35,6 +35,7 @@ export default function Movimentacao() {
   const startEdit = (transaction: Transaction) => {
     setEditingId(transaction.id);
     setEditFormData(transaction);
+    setIsModalOpen(true);
   };
 
   const saveEdit = () => {
@@ -46,6 +47,7 @@ export default function Movimentacao() {
     localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
     setEditingId(null);
     setEditFormData(null);
+    setIsModalOpen(false);
   };
 
   const deleteTransaction = (id: number) => {
@@ -53,7 +55,6 @@ export default function Movimentacao() {
     setTransactions(updatedTransactions);
     localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
   };
-
   const handleEditFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     if (editFormData) {
@@ -62,43 +63,45 @@ export default function Movimentacao() {
   };
 
   return (
-    <main>
-      <div className="flex justify-between">
-        <h3 className="font-bold text-lg">Minhas transações</h3>
+    <main className="p-4  md:p-8">
+      <div className="flex justify-between items-center flex-wrap gap-4 mt-8 lg:mt-2">
+        <h3 className="font-bold text-lg md:text-xl">Minhas transações</h3>
         <Add addTransaction={addTransaction} />
       </div>
-      <div className='bg-gray-800 rounded-3xl py-5 px-2'>
+      <div>
         <p className='mb-3 text-xl text-emerald-500'>Recentes</p>
         {transactions.map((transaction) => (
-          <div key={transaction.id}>
-            {editingId === transaction.id ? (
-              <div>
-                <input type="text" className='bg-transparent focus:outline-none ' name="type" value={editFormData?.type} onChange={handleEditFormChange} />
-                <input type="text"  className='bg-transparent focus:outline-none ' name="note" value={editFormData?.note} onChange={handleEditFormChange} />
-                <input type="text" className='bg-transparent focus:outline-none ' name="category" value={editFormData?.category} onChange={handleEditFormChange} />
-                <input type="number" className='bg-transparent focus:outline-none ' name="value" value={editFormData?.value} onChange={handleEditFormChange} />
-                <input type="date" className='bg-transparent focus:outline-none ' name="date" value={editFormData?.date} onChange={handleEditFormChange} />
-                <button onClick={saveEdit} className='ml-2 text-white border rounded-md p-0.5 text-sm bg-emerald-800'>Salvar</button>
-              </div>
-            ) : (
-              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 items-center justify-items-center'>
-  <div className='sm:w-3/4 text-sm'>
-    {transaction.type} - {transaction.note} - {transaction.category} - R${transaction.value} - {transaction.date}
-  </div>
-  
-  <div className='flex gap-2'>
-    <button onClick={() => startEdit(transaction)} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
-      <FaPencil />
-    </button>
-    <button onClick={() => deleteTransaction(transaction.id)} className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded'>
-      <FaTrashAlt />
-    </button>
-  </div>
-</div>
-            )}
+          <div key={transaction.id} className="flex items-center justify-between gap-4 mb-4">
+          
+            <div className='flex-1'>
+              <CardInfo {...transaction}>
+                <BtnActions
+                  onEdit={() => startEdit(transaction)}
+                  onDelete={() => deleteTransaction(transaction.id)}
+                />
+              </CardInfo>
+            </div>
           </div>
         ))}
       </div>
+      <dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} id="my_modal_1" className="modal">
+       
+      <div className="modal-box">
+            <form onSubmit={saveEdit}>
+              
+              <input type="text" name="note" value={editFormData?.note || ''} onChange={handleEditFormChange} placeholder="Nota" className='input input-bordered w-full max-w-xs my-2' />
+              <input type="text" name="category" value={editFormData?.category || ''} onChange={handleEditFormChange} placeholder="Categoria"  className="input input-bordered w-full max-w-xs my-2"/>
+              <input type="number" name="value" value={editFormData?.value || ''} onChange={handleEditFormChange} placeholder="Valor" className='select select-bordered select-sm w-full max-w-xs my-2' />
+              <input type="date" name="date" value={editFormData?.date || ''} onChange={handleEditFormChange} className='input input-bordered w-full max-w-xs my-2' />
+              <div className="modal-action">
+              <button type="submit" className="btn">
+                Save
+              </button>
+              </div>
+            </form>
+    
+        </div>
+      </dialog>
     </main>
   );
 }
