@@ -59,7 +59,6 @@ const BarChartComponent: React.FC<Props> = ({ transactions }) => {
           labelStyle: {
             fontSize: 13,
             fill: 'white',
-           
           },
         },
       }}
